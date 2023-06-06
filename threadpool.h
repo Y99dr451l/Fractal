@@ -9,7 +9,9 @@
 
 class ThreadPool {
 public:
+    // ThreadPool() {}
     ThreadPool(size_t numThreads) : stop(false) {
+        // numThreads = n;
         for (size_t i = 0; i < numThreads; ++i) {
             workers.emplace_back([this] {
                 while (true) {
@@ -36,6 +38,24 @@ public:
         for (std::thread& worker : workers) worker.join();
     }
 
+    /*void start() {
+        for (size_t i = 0; i < numThreads; ++i) {
+            workers.emplace_back([this] {
+                while (true) {
+                    std::function<void()> task;
+                    {
+                        std::unique_lock<std::mutex> lock(mutex);
+                        condition.wait(lock, [this] { return stop || !tasks.empty(); });
+                        if (stop && tasks.empty()) return;
+                        task = std::move(tasks.front());
+                        tasks.pop();
+                    }
+                    task();
+                }
+             });
+        }
+    }*/
+
     template<typename F>
     void enqueue(F&& func) {
         {
@@ -45,7 +65,15 @@ public:
         condition.notify_one();
     }
 
+    /*void set_numthreads(size_t n) {
+        numThreads = n;
+        if (workers.size() < n) {
+			start();
+		}
+    }*/
+
 private:
+    // size_t numThreads;
     std::vector<std::thread> workers;
     std::queue<std::function<void()>> tasks;
     std::mutex mutex;
