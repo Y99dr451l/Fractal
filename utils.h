@@ -1,6 +1,6 @@
 #pragma once
 
-#define KEY_ACTION(KEY, CODE) if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::KEY) { CODE }
+#define KEY_ACTION(KEY, CODE) if ( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::KEY) { CODE }
 
 void hsv_rgb(double h, double s, double v, double& r, double& g, double& b) {
 	double c = v * s;
